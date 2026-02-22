@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digitální audit – ČERVENÝ NOS Clowndoctors</title>
+<style>
+:root{--y:#ffcc00;--r:#e85252;--lb:#62c4dd;--db:#2d4173;--lg:#f7f8fa;--mg:#e2e5ea;--g:#4caf50;--o:#ff9800;--w:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:var(--lg);color:#333}
+.hdr{background:var(--db);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.hdr .lbl{color:var(--y);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.hdr .ttl{color:#fff;font-size:22px;font-weight:700;margin-top:4px}
+.hdr .ri{color:var(--mg);font-size:12px;text-align:right}
+.hdr .ri div+div{margin-top:2px}
+.tabs{background:#fff;border-bottom:1px solid var(--mg);display:flex;padding-left:20px;overflow-x:auto}
+.tab{padding:12px 18px;border:none;background:none;cursor:pointer;color:#888;font-weight:400;font-size:13px;border-bottom:3px solid transparent;font-family:inherit;white-space:nowrap}
+.tab:hover{color:var(--db)}.tab.on{color:var(--db);font-weight:700;border-bottom-color:var(--db)}
+.wrap{padding:20px 28px;max-width:1200px;margin:0 auto}
+.tp{display:none}.tp.on{display:block}
+.g6{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:800px){.g2,.g3{grid-template-columns:1fr}}
+.mc{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;gap:12px;border-left:4px solid var(--db)}
+.mc-i{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.mc-v{font-size:24px;font-weight:700;line-height:1.1}.mc-l{font-size:11px;color:#666;margin-top:2px}.mc-s{font-size:10px;color:#999;margin-top:1px}.mc-s.al{color:var(--r)}
+.cd{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.st{display:flex;align-items:center;gap:8px;margin:24px 0 12px}.st .ic{width:28px;height:28px;border-radius:6px;background:rgba(45,65,115,.06);display:flex;align-items:center;justify-content:center;font-size:14px}.st h2{font-size:15px;font-weight:700;color:var(--db)}
+.bdg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;color:#fff}
+/* Bars */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:7px}.br-l{width:120px;font-size:10px;color:#555;text-align:right;flex-shrink:0}.br-t{flex:1;height:18px;background:var(--mg);border-radius:4px;overflow:hidden;position:relative}.br-f{height:100%;border-radius:4px;transition:width .5s}.br-v{font-size:11px;font-weight:600;width:42px}
+/* Horizontal bar with label inside */
+.hb{margin-bottom:6px}.hb-l{font-size:10px;color:#555;margin-bottom:2px}.hb-t{height:22px;background:var(--mg);border-radius:4px;overflow:hidden;position:relative}.hb-f{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:600;color:#fff;min-width:30px}
+/* Radar via SVG */
+.radar-svg{display:block;margin:0 auto}
+/* Donut via SVG */
+.donut-wrap{text-align:center}
+/* List */
+.li{padding:9px 0;border-bottom:1px solid var(--mg)}.li:last-child{border-bottom:none}
+.li-h{display:flex;justify-content:space-between;align-items:center}.li-t{font-size:12px;font-weight:600}.li-d{font-size:10px;color:#888;margin-top:2px}
+/* Timeline */
+.tl{display:flex;overflow-x:auto}.tl-i{flex:1;min-width:90px;text-align:center;border-right:1px solid var(--mg);padding:8px 4px}.tl-i:last-child{border-right:none}
+.tl-m{font-size:11px;font-weight:700;color:var(--db);margin-bottom:5px;padding:3px 0;border-radius:4px}.tl-a{font-size:9px;color:#666;margin-bottom:1px}
+/* Alert */
+.alrt{background:#FDE8E8;border-radius:12px;padding:14px 20px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.alrt-t{font-size:14px;font-weight:700;color:var(--r)}.alrt-d{font-size:12px;color:#666;margin-top:2px}
+/* KPI */
+.kp{padding:12px}.kp-n{font-size:11px;color:#888}.kp-v{display:flex;align-items:baseline;gap:5px;margin-top:3px}
+.kp-c{font-size:20px;font-weight:700;color:var(--db)}.kp-a{color:#ccc;font-size:13px}.kp-g{font-size:15px;font-weight:600;color:var(--g)}
+.kp-b{margin-top:5px;height:4px;background:var(--mg);border-radius:2px}.kp-bf{height:4px;border-radius:2px}
+/* Scatter grid */
+.scatter{position:relative;width:100%;padding-bottom:52%;background:#fff;border:1px solid #eee;border-radius:8px;overflow:hidden}
+.scatter-dot{position:absolute;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;transition:transform .2s}
+.scatter-dot:hover{transform:translate(-50%,-50%) scale(1.4)}
+.scatter-dot .tip{display:none;position:absolute;bottom:22px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:10px;white-space:nowrap;z-index:10}
+.scatter-dot:hover .tip{display:block}
+.scatter-ax{position:absolute;font-size:10px;color:#999}
+.scatter-grid{position:absolute;border-left:1px solid #eee;border-bottom:1px solid #eee}
+/* Amb */
+.amb{display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:11px;color:#444}
+.rec-i{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:11px}
+.rec-d{width:6px;height:6px;border-radius:50%;flex-shrink:0}.rec-s{margin-left:auto;font-size:9px;color:#999}
+.rg{padding:14px;border-radius:10px}.rg-t{font-size:12px;font-weight:700;color:var(--db);margin-bottom:8px}
+.sf{padding:9px 0;border-bottom:1px solid var(--mg)}.sf:last-child{border-bottom:none}.sf-t{font-size:12px;font-weight:600;color:#333}.sf-d{font-size:10px;color:#888;margin-top:2px;padding-left:22px}
+.note{font-size:10px;color:#aaa;text-align:center;margin-top:4px}
+.ftr{background:var(--db);padding:12px 28px;margin-top:28px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}.ftr div{color:var(--mg);font-size:10px}
+.leg{display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap}.leg-i{display:flex;align-items:center;gap:4px;font-size:10px;color:#666}.leg-d{width:10px;height:10px;border-radius:50%}.leg-r{width:12px;height:8px;border-radius:2px}
+.pie-l{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:5px}.pie-li{display:flex;align-items:center;gap:3px;font-size:9px;color:#666}.pie-ld{width:7px;height:7px;border-radius:2px}
+.amb-bx{margin-top:12px;padding:10px 12px;background:var(--lg);border-radius:8px}.amb-bt{font-size:11px;font-weight:600;color:var(--db);margin-bottom:5px}
+.sub{font-size:11px;color:#666;text-align:center;font-weight:600;margin-bottom:5px}
+</style>
+</head>
+<body>
+
+<div class="hdr"><div class="header-left"><div class="lbl">Digitální audit 2026</div><div class="ttl">ČERVENÝ NOS Clowndoctors</div></div><div class="ri"><div>17 respondentů dotazník | 8 respondentů rozhovory</div><div>Období: leden–únor 2026</div></div></div>
+
+<div class="tabs" id="tabs"></div>
+<div class="wrap" id="app"></div>
+<div class="ftr"><div>Digitální audit ČERVENÝ NOS Clowndoctors | Mgr. Kateřina Švidrnochová | Únor 2026</div><div>Double Diamond | 17 resp. dotazník + 8 resp. rozhovory</div></div>
+
+<script>
+var C={y:'#ffcc00',r:'#e85252',lb:'#62c4dd',db:'#2d4173',g:'#4caf50',o:'#ff9800',mg:'#e2e5ea',lg:'#f7f8fa'};
+var curTab=0;
+
+// === SVG HELPERS ===
+function radarSVG(data,labels,w,h){
+  var cx=w/2,cy=h/2-5,R=Math.min(cx,cy)-35,n=data.length;
+  var s='<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">';
+  // grid rings
+  for(var r=1;r<=4;r++){
+    var pts=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;pts.push((cx+R*r/4*Math.cos(a)).toFixed(1)+','+(cy+R*r/4*Math.sin(a)).toFixed(1));}
+    s+='<polygon points="'+pts.join(' ')+'" fill="none" stroke="#e0e0e0" stroke-width="1"/>';
+  }
+  // axes + labels
+  for(var i=0;i<n;i++){
+    var a=Math.PI*2*i/n-Math.PI/2;
+    var ex=cx+R*Math.cos(a),ey=cy+R*Math.sin(a);
+    s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+ex.toFixed(1)+'" y2="'+ey.toFixed(1)+'" stroke="#e0e0e0" stroke-width="1"/>';
+    var lx=cx+(R+18)*Math.cos(a),ly=cy+(R+18)*Math.sin(a);
+    var anch='middle';if(Math.cos(a)>0.3)anch='start';if(Math.cos(a)<-0.3)anch='end';
+    s+='<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anch+'" font-size="10" fill="#666">'+labels[i]+'</text>';
+  }
+  // data polygon
+  var pts=[];for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=data[i]/100;pts.push((cx+R*v*Math.cos(a)).toFixed(1)+','+(cy+R*v*Math.sin(a)).toFixed(1));}
+  s+='<polygon points="'+pts.join(' ')+'" fill="rgba(45,65,115,0.2)" stroke="'+C.db+'" stroke-width="2"/>';
+  for(var i=0;i<n;i++){var a=Math.PI*2*i/n-Math.PI/2;var v=data[i]/100;s+='<circle cx="'+(cx+R*v*Math.cos(a)).toFixed(1)+'" cy="'+(cy+R*v*Math.sin(a)).toFixed(1)+'" r="4" fill="'+C.db+'"/>';}
+  // ring labels
+  for(var r=1;r<=4;r++){s+='<text x="'+(cx+3)+'" y="'+(cy-R*r/4+12)+'" font-size="8" fill="#bbb">'+r*25+'</text>';}
+  s+='</svg>';return s;
+}
+
+function donutSVG(data,colors,w,h,label){
+  var cx=w/2,cy=h/2,R=Math.min(cx,cy)-5,r2=R*0.55,total=0;
+  data.forEach(function(d){total+=d});
+  var s='<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">';
+  var startA=-Math.PI/2;
+  data.forEach(function(d,i){
+    var angle=d/total*Math.PI*2;
+    var endA=startA+angle;
+    var large=angle>Math.PI?1:0;
+    var x1=cx+R*Math.cos(startA),y1=cy+R*Math.sin(startA);
+    var x2=cx+R*Math.cos(endA),y2=cy+R*Math.sin(endA);
+    var ix1=cx+r2*Math.cos(endA),iy1=cy+r2*Math.sin(endA);
+    var ix2=cx+r2*Math.cos(startA),iy2=cy+r2*Math.sin(startA);
+    s+='<path d="M'+x1.toFixed(2)+','+y1.toFixed(2)+' A'+R+','+R+' 0 '+large+',1 '+x2.toFixed(2)+','+y2.toFixed(2)+' L'+ix1.toFixed(2)+','+iy1.toFixed(2)+' A'+r2+','+r2+' 0 '+large+',0 '+ix2.toFixed(2)+','+iy2.toFixed(2)+' Z" fill="'+colors[i]+'"/>';
+    startA=endA;
+  });
+  s+='</svg>';return s;
+}
+
+function hBar(label,val,max,color,w){
+  var pct=Math.round(val/max*100);
+  return '<div class="hb"><div class="hb-l">'+label+'</div><div class="hb-t" style="max-width:'+w+'px"><div class="hb-f" style="width:'+pct+'%;background:'+color+'">'+val+'</div></div></div>';
+}
+
+function hBarPct(label,val,color){
+  return '<div class="br"><div class="br-l">'+label+'</div><div class="br-t"><div class="br-f" style="width:'+val+'%;background:'+color+'"></div></div><div class="br-v" style="color:'+color+'">'+val+' %</div></div>';
+}
+
+function dualBar(label,now,target,max){
+  var pn=Math.round(now/max*100),pt=Math.round(target/max*100);
+  return '<div style="margin-bottom:10px"><div style="font-size:11px;color:#555;margin-bottom:3px">'+label+'</div><div style="display:flex;gap:4px;align-items:center"><div style="flex:1;height:14px;background:var(--mg);border-radius:3px;overflow:hidden;position:relative"><div style="position:absolute;height:100%;width:'+pt+'%;background:'+C.g+'30;border-radius:3px"></div><div style="position:absolute;height:100%;width:'+pn+'%;background:'+C.r+';border-radius:3px"></div></div><div style="font-size:10px;width:70px;text-align:right"><span style="color:'+C.r+';font-weight:600">'+now+'%</span> <span style="color:#ccc">→</span> <span style="color:'+C.g+'">'+target+'%</span></div></div></div>';
+}
+
+function scatterHTML(items,w,h){
+  // items: [{n,x,y,c}] where x,y are 0-10
+  var pad=40,iw=w-2*pad,ih=h-2*pad;
+  var s='<div style="position:relative;width:'+w+'px;height:'+h+'px;margin:0 auto;background:#fafafa;border-radius:8px;border:1px solid #eee">';
+  // grid
+  for(var i=0;i<=10;i+=2){
+    var px=pad+iw*i/10,py=pad+ih*(10-i)/10;
+    s+='<div style="position:absolute;left:'+pad+'px;right:'+pad+'px;top:'+py+'px;height:1px;background:#eee"></div>';
+    s+='<div style="position:absolute;left:'+px+'px;top:'+pad+'px;bottom:'+pad+'px;width:1px;background:#eee"></div>';
+    s+='<div style="position:absolute;left:'+(px-5)+'px;bottom:'+(pad-16)+'px;font-size:9px;color:#aaa">'+i+'</div>';
+    s+='<div style="position:absolute;left:'+(pad-18)+'px;top:'+(py-5)+'px;font-size:9px;color:#aaa">'+i+'</div>';
+  }
+  s+='<div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);font-size:10px;color:#999">Náročnost →</div>';
+  s+='<div style="position:absolute;top:50%;left:4px;transform:rotate(-90deg) translateX(-50%);transform-origin:0 0;font-size:10px;color:#999">Dopad →</div>';
+  items.forEach(function(it){
+    var px=pad+iw*it.x/10,py=pad+ih*(10-it.y)/10;
+    s+='<div style="position:absolute;left:'+(px-8)+'px;top:'+(py-8)+'px;width:16px;height:16px;border-radius:50%;background:'+it.c+';cursor:pointer" title="'+it.n+' (D:'+it.y+' N:'+it.x+')"></div>';
+  });
+  s+='</div>';return s;
+}
+
+// === DATA ===
+var problems=[
+  {n:'Know-how v hlavách',i:7,s:71,c:C.r},{n:'Manuální přepisování',i:6,s:88,c:C.o},
+  {n:'Teams chaos',i:5,s:59,c:C.o},{n:'Salesforce rigidita',i:5,s:50,c:C.y},
+  {n:'Chybí task management',i:4,s:47,c:C.y},{n:'Operativní přetížení',i:4,s:65,c:C.o},
+  {n:'Klaunská databáze',i:4,s:0,c:C.y},{n:'Bezpečnostní mezery',i:2,s:100,c:C.r}
+];
+var tools=[{n:'ChatGPT',v:4.2},{n:'Darujme',v:4.0},{n:'Copilot',v:3.8},{n:'Outlook',v:3.5},{n:'Salesforce',v:3.5},{n:'Teams',v:3.0},{n:'Excel',v:2.5},{n:'Power BI',v:2.5}];
+var recs=[
+  {n:'Bezpečnostní minimum',y:9,x:2,p:'Q',c:C.r},{n:'Teams governance',y:8,x:2,p:'Q',c:C.db},{n:'Komunikační matice',y:6,x:1,p:'Q',c:C.db},{n:'AI data policy',y:5,x:1,p:'Q',c:C.db},{n:'Remindery',y:5,x:2,p:'Q',c:C.db},
+  {n:'Know-how dokumentace',y:9,x:5,p:'S',c:C.lb},{n:'SF→Excel automatizace',y:8,x:4,p:'S',c:C.lb},{n:'Mzdový proces',y:7,x:5,p:'S',c:C.lb},{n:'Klaunská databáze',y:7,x:3,p:'S',c:C.lb},{n:'Copilot Pro pilot',y:6,x:3,p:'S',c:C.lb},
+  {n:'Power BI přemapování',y:7,x:8,p:'D',c:C.y},{n:'AI plánování klauniád',y:8,x:9,p:'D',c:C.y},{n:'Einstein SF',y:7,x:7,p:'D',c:C.y},{n:'Smart filtry granty',y:8,x:8,p:'D',c:C.y}
+];
+var sec=[{n:'Správce hesel',v:6,t:80},{n:'2FA všude',v:35,t:90},{n:'Bezp. sdílení',v:59,t:90},{n:'Zná pravidla',v:53,t:90},{n:'Incident resp.',v:41,t:80},{n:'VPN',v:6,t:50}];
+var kpis=[{n:'AI adopce',v:'77',t:'85',u:' %',p:90},{n:'Bezpečnost',v:'0',t:'50',u:' %',p:0},{n:'Produkt. dluh',v:'29',t:'15',u:' %',p:48},{n:'Spokojenost',v:'3,47',t:'4,0',u:'/5',p:87},{n:'Hledání soub.',v:'3,88',t:'3,0',u:'/5',p:22},{n:'Pozdní info',v:'3,65',t:'2,5',u:'/5',p:27}];
+
+// === TABS ===
+var tabNames=['📊 Přehled','⚠️ Problémy & Nástroje','✅ Doporučení','🔒 Bezpečnost'];
+var tabsEl=document.getElementById('tabs');
+tabNames.forEach(function(t,i){
+  var b=document.createElement('button');b.className='tab'+(i===0?' on':'');b.textContent=t;
+  b.onclick=function(){switchTab(i)};tabsEl.appendChild(b);
+});
+
+function switchTab(i){
+  curTab=i;
+  document.querySelectorAll('.tab').forEach(function(t,j){t.className='tab'+(j===i?' on':'')});
+  render();
+}
+
+// === RENDER ===
+function render(){
+  var h='';
+  if(curTab===0) h=renderOverview();
+  if(curTab===1) h=renderProblems();
+  if(curTab===2) h=renderRecs();
+  if(curTab===3) h=renderSecurity();
+  document.getElementById('app').innerHTML=h;
+}
+
+function renderOverview(){
+  var h='<div class="g6">';
+  h+=mc('🧠','AI adopce','77 %','13 z 17 pravidelně',C.db,0);
+  h+=mc('🛡️','Bezpečnostní skóre','0 %','Nikdo nesplňuje 3 praktiky',C.r,1);
+  h+=mc('⚡','Produktivitní dluh','29 %','Přepisuje denně/týdně',C.o,0);
+  h+=mc('📁','Hledání souborů','3,88/5','71 % má problém často',C.o,0);
+  h+=mc('💬','Pozdní informace','3,65/5','59 % často/velmi často',C.o,0);
+  h+=mc('👥','Ochota zapojit se','82 %','14 z 17 chce pomáhat',C.g,0);
+  h+='</div>';
+  h+='<div class="g2" style="margin-top:8px"><div>';
+  h+='<div class="st"><div class="ic">👥</div><h2>Profil organizace</h2></div>';
+  h+='<div class="cd">'+radarSVG([77,76,82,69,82,77,12,29],['AI adopce','Proaktivita','Ochota','Spokojenost','Transparentnost','Porady','Bezpečnost','Soubory'],440,300);
+  h+='<div class="note">Bezpečnost a Soubory: invertované škály (vyšší = lepší)</div></div>';
+  h+='</div><div>';
+  h+='<div class="st"><div class="ic">🧠</div><h2>Segmentace</h2></div>';
+  h+='<div class="cd"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  h+='<div><div class="sub">Postoj ke změnám</div>'+donutSVG([29,41,29,18],[C.db,C.lb,C.y,C.mg],160,120);
+  h+='<div class="pie-l"><div class="pie-li"><div class="pie-ld" style="background:'+C.db+'"></div>Inovátoři 29%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.lb+'"></div>Adaptéři 41%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.y+'"></div>Pragmatici 29%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.mg+'"></div>Konzerv. 18%</div></div></div>';
+  h+='<div><div class="sub">AI adopce</div>'+donutSVG([77,12,6,6],[C.db,C.lb,C.y,C.mg],160,120);
+  h+='<div class="pie-l"><div class="pie-li"><div class="pie-ld" style="background:'+C.db+'"></div>Pravidelně 77%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.lb+'"></div>Vyzkoušeli 12%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.y+'"></div>Zájem 6%</div><div class="pie-li"><div class="pie-ld" style="background:'+C.mg+'"></div>Bez zájmu 6%</div></div></div>';
+  h+='</div>';
+  h+='<div class="amb-bx"><div class="amb-bt">Digitální ambasadoři</div>';
+  h+='<div class="amb"><span class="bdg" style="background:'+C.db+'">Patron</span> Výkonný ředitel (R6a)</div>';
+  h+='<div class="amb"><span class="bdg" style="background:'+C.lb+'">Champion</span> SF specialistka (R4)</div>';
+  h+='<div class="amb"><span class="bdg" style="background:'+C.g+'">Ambassador</span> Vedoucí FR (R5) + Umělecký řed. (R6b)</div>';
+  h+='</div></div></div></div>';
+  // KPIs
+  h+='<div class="st" style="margin-top:24px"><div class="ic">🕐</div><h2>KPIs – Baseline vs. Cíl (prosinec 2026)</h2></div><div class="g6">';
+  kpis.forEach(function(k){
+    var gr=k.p>60?'linear-gradient(90deg,'+C.db+','+C.g+')':'linear-gradient(90deg,'+C.o+','+C.g+')';
+    h+='<div class="cd kp"><div class="kp-n">'+k.n+'</div><div class="kp-v"><span class="kp-c">'+k.v+k.u+'</span><span class="kp-a">→</span><span class="kp-g">'+k.t+k.u+'</span></div><div class="kp-b"><div class="kp-bf" style="width:'+k.p+'%;background:'+gr+'"></div></div></div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+function renderProblems(){
+  var h='<div class="st"><div class="ic">⚠️</div><h2>Top problémy – rozhovory (z 8 respondentů)</h2></div><div class="cd">';
+  problems.forEach(function(p){h+=hBar(p.n,p.i,8,p.c,500)});
+  h+='</div>';
+  h+='<div class="g2" style="margin-top:8px"><div>';
+  h+='<div class="st"><div class="ic">📋</div><h2>Potvrzení z dotazníku</h2></div><div class="cd">';
+  problems.filter(function(p){return p.s>0}).forEach(function(p){h+=hBarPct(p.n,p.s,p.c)});
+  h+='<div class="note" style="text-align:left;margin-top:6px">% respondentů dotazníku, kteří problém potvrdili</div>';
+  h+='</div></div><div>';
+  h+='<div class="st"><div class="ic">⚡</div><h2>Nástroje – hodnocení</h2></div><div class="cd">';
+  tools.forEach(function(t){
+    var col=t.v>=3.5?C.db:t.v>=3?C.lb:C.o;
+    h+='<div class="br"><div class="br-l">'+t.n+'</div><div class="br-t"><div class="br-f" style="width:'+Math.round(t.v/5*100)+'%;background:'+col+'"></div></div><div class="br-v" style="color:'+col+'">'+t.v+'/5</div></div>';
+  });
+  h+='<div class="note" style="text-align:left;margin-top:6px">Syntetické hodnocení z rozhovorů</div>';
+  h+='</div></div></div>';
+  return h;
+}
+
+function renderRecs(){
+  var h='<div class="st"><div class="ic">✅</div><h2>Matice priorit – dopad vs. náročnost</h2></div><div class="cd">';
+  h+=scatterHTML(recs,700,380);
+  h+='<div class="leg"><div class="leg-i"><div class="leg-d" style="background:'+C.db+'"></div>Quick wins</div><div class="leg-i"><div class="leg-d" style="background:'+C.lb+'"></div>Střednědobé</div><div class="leg-i"><div class="leg-d" style="background:'+C.y+'"></div>Dlouhodobé</div><div class="leg-i"><div class="leg-d" style="background:'+C.r+'"></div>Kritické</div></div>';
+  h+='</div>';
+  h+='<div class="g3" style="margin-top:14px">';
+  [{t:'Quick wins (do 1 měs.)',p:'Q',bg:'rgba(45,65,115,.04)'},{t:'Střednědobé (1–6 měs.)',p:'S',bg:'rgba(98,196,221,.04)'},{t:'Dlouhodobé (6–12 měs.)',p:'D',bg:'rgba(255,204,0,.06)'}].forEach(function(g){
+    h+='<div class="rg" style="background:'+g.bg+'"><div class="rg-t">'+g.t+'</div>';
+    recs.filter(function(r){return r.p===g.p}).forEach(function(r){h+='<div class="rec-i"><div class="rec-d" style="background:'+r.c+'"></div>'+r.n+'<span class="rec-s">D:'+r.y+' N:'+r.x+'</span></div>'});
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<div class="st"><div class="ic">🕐</div><h2>Časová osa implementace</h2></div><div class="cd"><div class="tl">';
+  [{m:'Bře',a:['Bezpečnost','Teams gov.','Kom. matice'],q:1},{m:'Dub',a:['Know-how dok.','Top 3 procesy'],q:1},{m:'Kvě',a:['SF→Excel aut.','Mzdy digital.'],q:1},{m:'Čvn',a:['Klaunská DB','Workshop aut.'],q:1},{m:'Čvc',a:['Copilot Pro','Planner'],q:1},{m:'Srp',a:['Monitoring','Evaluace'],q:0},{m:'Zář',a:['Power BI','přemapování'],q:0},{m:'Q4',a:['AI plánování','Einstein','Smart filtry'],q:0}].forEach(function(t){
+    h+='<div class="tl-i"><div class="tl-m" style="background:'+(t.q?'rgba(45,65,115,.08)':'rgba(255,204,0,.1)')+'">'+t.m+'</div>';
+    t.a.forEach(function(a){h+='<div class="tl-a">'+a+'</div>'});h+='</div>';
+  });
+  h+='</div></div>';
+  return h;
+}
+
+function renderSecurity(){
+  var h='<div class="alrt"><div style="font-size:24px;flex-shrink:0">⚠️</div><div><div class="alrt-t">Bezpečnostní skóre: 0 %</div><div class="alrt-d">Žádný z 17 respondentů nesplňuje současně 3 základní praktiky: správce hesel + 2FA všude + bezpečné sdílení dat</div></div></div>';
+  h+='<div class="st"><div class="ic">🛡️</div><h2>Bezpečnostní metriky – stav vs. cíl</h2></div><div class="cd">';
+  sec.forEach(function(s){h+=dualBar(s.n,s.v,s.t,100)});
+  h+='<div class="leg"><div class="leg-i"><div class="leg-r" style="background:'+C.r+'"></div>Aktuální</div><div class="leg-i"><div class="leg-r" style="background:'+C.g+'40"></div>Cíl 12/2026</div></div>';
+  h+='</div>';
+  h+='<div class="g2" style="margin-top:8px"><div>';
+  h+='<div class="st"><div class="ic">⚠️</div><h2>Kritická zjištění</h2></div><div class="cd">';
+  [{i:'🔑',t:'Správce hesel: 6 % (1 z 17)',d:'47 % ukládá v prohlížeči, 12 % zapisuje'},{i:'📱',t:'2FA: 18 % neví co to je',d:'Pouze 35 % používá důsledně'},{i:'📧',t:'GDPR: 41 % by sdílelo nezabezpečeně',d:'29 % by poslalo e-mailem jako přílohu'},{i:'🚨',t:'Incident response: 24 % neví',d:'6 % neví co je bezp. incident'},{i:'🌐',t:'VPN: 6 % (1 z 17)',d:'82 % domácí wifi, 53 % mobilní data'}].forEach(function(f){
+    h+='<div class="sf"><div class="sf-t">'+f.i+' '+f.t+'</div><div class="sf-d">'+f.d+'</div></div>';
+  });
+  h+='</div></div><div>';
+  h+='<div class="st"><div class="ic">✅</div><h2>Opatření (URGENT)</h2></div><div class="cd">';
+  [{n:'Bitwarden Teams',d:'Správce hesel',c:'$4/os./měs.',t:'1 den',cc:C.lb},{n:'2FA vynucení',d:'Azure AD Conditional Access',c:'0 Kč',t:'1 den',cc:C.g},{n:'Bezpečnostní školení',d:'2h workshop',c:'Interní',t:'0,5 dne',cc:C.lb},{n:'AI data policy',d:'One-pager',c:'0 Kč',t:'2h',cc:C.g},{n:'Incident response',d:'Plán: kdo, co, jak',c:'0 Kč',t:'2h',cc:C.g}].forEach(function(a){
+    h+='<div class="li"><div class="li-h"><div class="li-t" style="color:'+C.db+'">'+a.n+'</div><span class="bdg" style="background:'+a.cc+'">'+a.c+'</span></div><div class="li-d">'+a.d+' | '+a.t+'</div></div>';
+  });
+  h+='</div></div></div>';
+  return h;
+}
+
+function mc(icon,label,value,sub,color,alert){
+  return '<div class="mc" style="border-left-color:'+color+'"><div class="mc-i" style="background:'+color+'15">'+icon+'</div><div><div class="mc-v" style="color:'+color+'">'+value+'</div><div class="mc-l">'+label+'</div><div class="mc-s'+(alert?' al':'')+'">'+sub+'</div></div></div>';
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
